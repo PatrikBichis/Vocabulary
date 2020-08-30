@@ -3,7 +3,7 @@
 @inject Vocabulary.Data.HomeworkStore HomeworkStore
 @inject IJSRuntime JSRuntime
 
-<h3>Förhör</h3>
+<h3>Förhör</h3><button type="button" class="btn btn-primary float-right" @onclick="@(()=>NavigationManager.NavigateTo("voice/hearing/" + homework.Id))">Växla till muntligt förhör</button>
 
 @if (homework != null)
 {
@@ -63,7 +63,7 @@
     public string Id { get; set; }
 
     
-     [CascadingParameter(Name="BaseUrl")]
+    [CascadingParameter(Name="BaseUrl")]
     private string BaseUrl { get; set; }
 
     Shared.Homework homework = null;

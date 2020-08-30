@@ -1,0 +1,225 @@
+@page  "/voice/hearing/{id}"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@using Toolbelt.Blazor.SpeechSynthesis 
+@inject SpeechSynthesis SpeechSynthesis
+@using Toolbelt.Blazor.SpeechRecognition 
+@inject SpeechRecognition SpeechRecognition
+@implements IDisposable
+
+<h3>Muntligt förhör</h3> <button type="button" class="btn btn-primary float-right" @onclick="@(()=>NavigationManager.NavigateTo("hearing/" + homework.Id))">Växla till skriftligt förhör</button>
+
+@if (homework != null && currentWord != null)
+{
+    <p>Tryck på Start knappen och säg ordet på engelska.</p>
+
+    <h5>@currentWord.Native</h5>
+    @if (!word.IsNew)
+    {
+        @if (word.IsCorrect)
+        {
+            <div class="badge badge-info">
+                <div class="badge badge-danger">Rätt</div>
+            </div>
+        }
+        else
+        {
+            <div class="badge badge-danger">Fel</div>
+            @if (word.IsToShort)
+            {<small>Det saknas någon bokstav</small>}
+            @if (word.IsToLong)
+            {<small>Det är för många bokstäver</small>}
+            @if (word.WrongLetter.Length > 0)
+            {
+                <small>Någon/några bokstäver är fel: </small>
+
+                var list = word.Word.ToCharArray();
+
+                for (var i = 0; i < list.Length; i++)
+                {
+                    if (word.WrongLetter.Contains(i))
+                    {
+                        <div class="badge badge-danger">@list[i]</div>
+                    }
+                    else
+                    {
+                        <div class="badge badge-info">@list[i]</div>
+                    }
+                }
+            }
+        }
+    }
+    <br>
+    @if(IsListening){
+        <small>Datorn lysnar</small>
+    }
+    <button type="button" class="btn btn-primary" disabled="@IsListening" @onclick="onReady">Start</button><button type="button" disabled="@(!IsListening)" class="btn btn-primary ml-2" @onclick="onStop">Stop</button>
+
+     @foreach (var result in this.Results)
+    {
+        if (result.IsFinal)
+        {
+            <text>@result.Items[0].Transcript</text>
+        }
+        else
+        {
+            <i style="color:#ddd;">@result.Items[0].Transcript</i>
+        }
+    }
+
+    @if(Voices != null){
+        <ul>
+        @foreach (var v in Voices)
+        {
+            <li>@v.Name <b>:</b> @v.Lang</li>
+        }
+        </ul>
+    }
+}
+
+@code{
+    [Parameter]
+    public string Id { get; set; }
+
+    
+    [CascadingParameter(Name="BaseUrl")]
+    private string BaseUrl { get; set; }
+
+    Shared.Homework homework = null;
+
+    Shared.Word currentWord = null;
+
+    Shared.EnteredWord word = new EnteredWord();
+
+    private Random rng = new Random();
+    private int index = 0;
+    private bool once = true;
+
+    SpeechRecognitionResult[] Results = new SpeechRecognitionResult[0];
+
+    bool IsListening = false;
+
+    IEnumerable<SpeechSynthesisVoice> Voices;
+
+     protected override async Task OnInitializedAsync()
+    {
+        this.SpeechRecognition.Result += OnSpeechRecognized;
+        this.SpeechRecognition.End += OnSpeechEnded;
+        this.SpeechRecognition.Lang = "sv-SE";
+        this.SpeechRecognition.InterimResults = false;
+        this.SpeechRecognition.Continuous = false;
+        homework = await HomeworkStore.GetHomeworkAsync(Id);
+        Reset();
+        GetNextWord();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (homework != null)
+        {
+            if (currentWord != null)
+            {
+                if (once)
+                {
+                    once = false;
+@*                     await JSRuntime.InvokeVoidAsync(
+                         "helperJsFunctions.speak", "Tryck på Start och säg " + currentWord.Native + " på engelska."); *@
+
+                     var utterancet = new SpeechSynthesisUtterance {
+                        Text = "Tryck på redo och säg " + currentWord.Native + " på engelska.",
+                        Lang = "sv-SE", // BCP 47 language tag
+                        Pitch = 1.0, // 0.0 ~ 2.0 (Default 1.0)
+                        Rate = 1.0, // 0.1 ~ 10.0 (Default 1.0)
+                        Volume = 1.0 // 0.0 ~ 1.0 (Default 1.0)
+                    };
+                    this.SpeechSynthesis.Speak(utterancet); // <-- Speak!    
+                }
+            }
+
+        }
+        if (firstRender)
+        {
+            this.Voices = await this.SpeechSynthesis.GetVoicesAsync();
+            this.StateHasChanged();
+        }
+    }
+
+    private void OnSpeechEnded(object sender, EventArgs args)
+    {
+        if (this.IsListening)
+        {
+            this.IsListening = false;
+            this.StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        this.SpeechRecognition.Result -= OnSpeechRecognized;
+        this.SpeechRecognition.End -= OnSpeechEnded;
+    }
+    void OnSpeechRecognized(object sender, SpeechRecognitionEventArgs args)
+    {
+    // DO SOMETHING...
+    }
+
+    async Task onReady(){
+        @* var utterancet = new SpeechSynthesisUtterance {
+            Text = "Hej,  vad är vädret?",
+            Lang = "sv-SE", // BCP 47 language tag
+            Pitch = 1.0, // 0.0 ~ 2.0 (Default 1.0)
+            Rate = 1.0, // 0.1 ~ 10.0 (Default 1.0)
+            Volume = 1.0 // 0.0 ~ 1.0 (Default 1.0)
+        };
+        this.SpeechSynthesis.Speak(utterancet); // <-- Speak! *@
+        if (!this.IsListening)
+        {
+            this.IsListening = true;
+            await this.SpeechRecognition.StartAsync();
+        }
+    }
+
+    async Task onStop(){
+         if (this.IsListening)
+        {
+            this.IsListening = false;
+            await this.SpeechRecognition.StopAsync();
+        }
+    }
+
+    void GetNextWord()
+    {
+        if (homework != null)
+        {
+            currentWord = homework.Words.ElementAt(index);
+            index++; if (index >= homework.Words.Count) index = 0;
+        }
+    }
+
+    void Reset()
+    {
+
+        homework.Words = Shuffle(homework.Words);
+        foreach (var g in homework.Words)
+        {
+            g.Reset();
+        }
+    }
+
+    public ICollection<T> Shuffle<T>(ICollection<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list.ElementAt(k);
+            var item = list.ElementAt(k);
+            item = list.ElementAt(n);
+            item = value;
+        }
+
+        return list;
+    }
+}

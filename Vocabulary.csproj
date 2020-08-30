@@ -19,6 +19,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="3.2.0" />
+    <PackageReference Include="Toolbelt.Blazor.SpeechRecognition" Version="0.0.4.6-alpha" />
+    <PackageReference Include="Toolbelt.Blazor.SpeechSynthesis" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
