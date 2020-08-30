@@ -53,12 +53,12 @@
 
     async Task Add()
     {
-        NavigationManager.NavigateTo(BaseUrl + "/create/homework");
+        NavigationManager.NavigateTo(BaseUrl + "create/homework");
     }
 
     async Task Change(string id)
     {
-        NavigationManager.NavigateTo(BaseUrl + "/homework/" + id);
+        NavigationManager.NavigateTo(BaseUrl + "homework/" + id);
     }
 
     async Task Remove(string id)

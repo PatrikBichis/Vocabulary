@@ -62,6 +62,10 @@
     [Parameter]
     public string Id { get; set; }
 
+    
+     [CascadingParameter(Name="BaseUrl")]
+    private string BaseUrl { get; set; }
+
     Shared.Homework homework = null;
 
     Shared.Word currentWord = null;
@@ -117,7 +121,7 @@
             {
 
                 await HomeworkStore.SaveHomeworkAsync(homework);
-                NavigationManager.NavigateTo("completed/hearing/" + homework.Id);
+                NavigationManager.NavigateTo(BaseUrl + "completed/hearing/" + homework.Id);
             }
             else
             {
