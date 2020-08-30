@@ -49,7 +49,7 @@
             focusElement: function (id) {
                 const element = document.getElementById(id);
 
-                if(element !== undefined){
+                if(element !== undefined && element !== null){
 
                     element.focus();
                     element.select();
