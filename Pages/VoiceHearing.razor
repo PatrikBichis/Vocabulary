@@ -107,8 +107,8 @@
         this.SpeechRecognition.Result += OnSpeechRecognized;
         this.SpeechRecognition.End += OnSpeechEnded;
         this.SpeechRecognition.Lang = "sv-SE";
-        this.SpeechRecognition.InterimResults = false;
-        this.SpeechRecognition.Continuous = false;
+        this.SpeechRecognition.InterimResults = true;
+        this.SpeechRecognition.Continuous = true;
         homework = await HomeworkStore.GetHomeworkAsync(Id);
         Reset();
         GetNextWord();
@@ -127,7 +127,7 @@
                          "helperJsFunctions.speak", "Tryck på Start och säg " + currentWord.Native + " på engelska."); *@
 
                      var utterancet = new SpeechSynthesisUtterance {
-                        Text = "Tryck på redo och säg " + currentWord.Native + " på engelska.",
+                        Text = "Tryck på Start och säg " + currentWord.Native + " på engelska.",
                         Lang = "sv-SE", // BCP 47 language tag
                         Pitch = 1.0, // 0.0 ~ 2.0 (Default 1.0)
                         Rate = 1.0, // 0.1 ~ 10.0 (Default 1.0)
@@ -162,17 +162,21 @@
     void OnSpeechRecognized(object sender, SpeechRecognitionEventArgs args)
     {
     // DO SOMETHING...
+        Results = args.Results;
+        StateHasChanged();
     }
 
     async Task onReady(){
-        @* var utterancet = new SpeechSynthesisUtterance {
+        
+       /*  var utterancet = new SpeechSynthesisUtterance {
             Text = "Hej,  vad är vädret?",
             Lang = "sv-SE", // BCP 47 language tag
             Pitch = 1.0, // 0.0 ~ 2.0 (Default 1.0)
             Rate = 1.0, // 0.1 ~ 10.0 (Default 1.0)
             Volume = 1.0 // 0.0 ~ 1.0 (Default 1.0)
         };
-        this.SpeechSynthesis.Speak(utterancet); // <-- Speak! *@
+        this.SpeechSynthesis.Speak(utterancet); // <-- Speak! 
+        */
         if (!this.IsListening)
         {
             this.IsListening = true;
