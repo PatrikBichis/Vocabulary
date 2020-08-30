@@ -1,0 +1,50 @@
+﻿@page "/select/hearing/"
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@inject NavigationManager NavigationManager
+
+<h3>Välj en läxa</h3>
+@if (homeworks != null)
+{
+    <table id="Words" class="table table-bordered">
+        <thead>
+            <tr>
+                <th width="100">#</th>
+                <th>Namn</th>
+                <th>Beskrivning</th>
+                <th width="100">Antal ord</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in homeworks)
+            {
+                <tr>
+                    <td><button type="button" class="btn btn-sm btn-primary ml-2" @onclick="(()=>Select(g.Id))">Välj</button></td>
+                    <td>
+                        @g.Name
+                    </td>
+                    <td>
+                        <small>@g.Description</small>
+                    </td>
+                    <td>@g.Words.Count()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    Shared.Homework[] homeworks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        homeworks = await HomeworkStore.GetAllHomeworksAsync();
+    }
+
+
+    async Task Select(string id)
+    {
+        NavigationManager.NavigateTo("/hearing/" + id);
+    }
+}

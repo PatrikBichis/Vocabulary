@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Vocabulary</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="manifest.json" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=HpQ0cOJA"></script>
+
+    <script type="text/javascript">
+        window.helperJsFunctions = {
+            focusElement: function (id) {
+                const element = document.getElementById(id);
+                element.focus();
+                element.select();
+
+                console.dir(element);
+
+                console.log("Put id: " + id + " to focus!");
+            },
+            speak: function (text) {
+                responsiveVoice.speak(text, "Swedish Female", { rate: 0.8 ,  pitch: 1, volume: 1 });
+            }
+        }
+    </script>
+
+
+</head>
+
+<body>
+    <app>Loading...</app>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="scripts/idb.js"></script>
+    <script src="scripts/localHomeworkStore.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    <script>
+        responsiveVoice.speak("Välkommen till glosor.se", "Swedish Female");
+
+        console.log("do you here me?");
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+﻿@page "/homeworks"
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@inject NavigationManager NavigationManager
+
+<h3>Läxor</h3>
+@if (homeworks != null)
+{
+    <table id="Words" class="table table-bordered">
+        <thead>
+            <tr>
+                <th width="180"># <button class="btn btn-sm btn-primary float-right" @onclick="@Add"> + </button></th>
+                <th>Namn</th>
+                <th>Beskrivning</th>
+                <th width="100">Antal ord</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var g in homeworks)
+            {
+                <tr>
+                    <td><button type="button" class="btn btn-sm btn-primary ml-2" @onclick="(()=>Change(g.Id))">Ändra</button><button type="button" class="btn btn-sm btn-danger ml-2" @onclick="(()=>Remove(g.Id))">Ta bort</button></td>
+                    <td>
+                        @g.Name
+                    </td>
+                    <td>
+                        <small>@g.Description</small>
+                    </td>
+                    <td>@g.Words.Count()</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4">
+                    <button class="btn btn-sm btn-primary" @onclick="@Add"> + </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    Shared.Homework[] homeworks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        homeworks = await HomeworkStore.GetAllHomeworksAsync();
+    }
+
+    async Task Add()
+    {
+        NavigationManager.NavigateTo("/create/homework");
+    }
+
+    async Task Change(string id)
+    {
+        NavigationManager.NavigateTo("/homework/" + id);
+    }
+
+    async Task Remove(string id)
+    {
+
+    }
+}

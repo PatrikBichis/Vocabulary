@@ -1,0 +1,234 @@
+﻿@page  "/hearing/{id}"
+@inject NavigationManager NavigationManager
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@inject IJSRuntime JSRuntime
+
+<h3>Förhör</h3>
+
+@if (homework != null)
+{
+    <p>Skriv in nedan ord på engelska.</p>
+
+    <EditForm Model="@word" OnValidSubmit=@ValidFormSubmitted>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="Name">@currentWord.Native:</label>
+
+            <InputText @bind-Value="@word.Word" class="form-control" id="Name" autocomplete="off" />
+            @if (!word.IsNew)
+            {
+                @if (word.IsCorrect)
+                {
+                    <div class="badge badge-info">
+                        <div class="badge badge-danger">Rätt</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="badge badge-danger">Fel</div>
+                    @if (word.IsToShort)
+                    {<small>Det saknas någon bokstav</small>}
+                    @if (word.IsToLong)
+                    {<small>Det är för många bokstäver</small>}
+                    @if (word.WrongLetter.Length > 0)
+                    {
+                        <small>Någon/några bokstäver är fel: </small>
+
+                        var list = word.Word.ToCharArray();
+
+                        for (var i = 0; i < list.Length; i++)
+                        {
+                            if (word.WrongLetter.Contains(i))
+                            {
+                                <div class="badge badge-danger">@list[i]</div>
+                            }
+                            else
+                            {
+                                <div class="badge badge-info">@list[i]</div>
+                            }
+                        }
+                    }
+                }
+            }
+
+        </div>
+        <input type="submit" class="btn btn-primary" value="Rätta" />
+
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Shared.Homework homework = null;
+
+    Shared.Word currentWord = null;
+
+    Shared.EnteredWord word = new EnteredWord();
+
+    private ElementReference textbox;
+
+    private Random rng = new Random();
+    private int index = 0;
+    private bool once = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        homework = await HomeworkStore.GetHomeworkAsync(Id);
+        Reset();
+        GetNextWord();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        if (homework != null)
+        {
+            await JSRuntime.InvokeVoidAsync(
+                "helperJsFunctions.focusElement", "Name");
+
+            if (currentWord != null)
+            {
+                if (once)
+                {
+                    once = false;
+                    await JSRuntime.InvokeVoidAsync(
+                         "helperJsFunctions.speak", "Skriv" + currentWord.Native + " på engelska.");
+                }
+            }
+
+        }
+    }
+
+    async Task ValidFormSubmitted(EditContext editContext)
+    {
+        CheckWord();
+
+        word.IsNew = false;
+
+        if (word.IsCorrect)
+        {
+            currentWord.NrOfComplete++;
+            currentWord.NrOfSuccess++;
+
+            if (CheckIfDone(homework.Words.ToList()))
+            {
+
+                await HomeworkStore.SaveHomeworkAsync(homework);
+                NavigationManager.NavigateTo("completed/hearing/" + homework.Id);
+            }
+            else
+            {
+                GetNextWord();
+
+                await JSRuntime.InvokeVoidAsync(
+                "helperJsFunctions.speak", "Bra jobbat, skriv nu " + currentWord.Native + " på engelska.");
+            }
+            word = new EnteredWord();
+        }
+        else
+        {
+            currentWord.NrOfFailure++;
+
+            await JSRuntime.InvokeVoidAsync(
+            "helperJsFunctions.speak", "Nära men inte helt rätt.");
+        }
+
+        await HomeworkStore.SaveHomeworkAsync(homework);
+
+        await JSRuntime.InvokeVoidAsync(
+        "helperJsFunctions.focusElement", "Name");
+    }
+
+    void GetNextWord()
+    {
+        if (homework != null)
+        {
+            currentWord = homework.Words.ElementAt(index);
+            index++; if (index >= homework.Words.Count) index = 0;
+        }
+    }
+
+    void CheckWord()
+    {
+        Console.WriteLine();
+        var indexes = new List<int>();
+        word.IsCorrect = false;
+        word.WrongLetter = indexes.ToArray();
+        if (currentWord.Translated.Count() > word.Word.Count())
+        {
+            word.IsToShort = true;
+            word.IsToLong = false;
+            Console.WriteLine("Det saknas någon bokstav");
+            return;
+        }
+        if (currentWord.Translated.Count() < word.Word.Count())
+        {
+            word.IsToShort = false;
+            word.IsToLong = true;
+            Console.WriteLine("Det är för många bokstäver");
+            return;
+        }
+
+        if (currentWord.Translated.Count() == word.Word.Count() && currentWord.Translated != word.Word)
+        {
+            var index = 0;
+
+            Console.WriteLine("Någon eller några bokstäver är fel:");
+
+            word.IsToShort = false;
+            word.IsToLong = false;
+
+            foreach (var c in word.Word.ToCharArray())
+            {
+                if (c == currentWord.Translated.ToCharArray().ElementAt(index))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    indexes.Add(index);
+                }
+                Console.Write(c);
+                index++;
+            }
+
+            word.WrongLetter = indexes.ToArray();
+            return;
+        }
+        word.IsCorrect = true;
+    }
+
+    public ICollection<T> Shuffle<T>(ICollection<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list.ElementAt(k);
+            var item = list.ElementAt(k);
+            item = list.ElementAt(n);
+            item = value;
+        }
+
+        return list;
+    }
+
+    void Reset()
+    {
+
+        homework.Words = Shuffle(homework.Words);
+        foreach (var g in homework.Words)
+        {
+            g.Reset();
+        }
+    }
+
+    bool CheckIfDone(IList<Word> glosor)
+    {
+        return glosor.All(x => x.NrOfComplete >= x.NrToComplete);
+    }
+}

@@ -1,0 +1,41 @@
+﻿@page "/create/homework"
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@inject NavigationManager NavigationManager
+
+<h3>CreateHomework</h3>
+<EditForm Model="@newHomework" OnValidSubmit=@ValidFormSubmitted>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="Name">Namnet på läxan:</label>
+        <InputText @bind-Value="@newHomework.Name" class="form-control" id="Name" />
+        <label for="Desc">Beskrivning:</label>
+        <InputText @bind-Value="@newHomework.Description" class="form-control" id="Desc" />
+    </div>
+    <div class="form-group">
+        <label for="Lang">Språk</label>
+        <InputText @bind-Value="@newHomework.Language" class="form-control" id="Lang" />
+    </div>
+    <input type="submit" class="btn btn-primary" value="Save" />
+</EditForm>
+
+@code {
+    Shared.Homework newHomework = new Shared.Homework();
+
+    async Task ValidFormSubmitted(EditContext editContext)
+    {
+        Console.WriteLine("Ok to submit");
+        try
+        {
+            await HomeworkStore.SaveHomeworkAsync(newHomework);
+
+            NavigationManager.NavigateTo("homework/"+ newHomework.Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+
+    }
+}

@@ -1,0 +1,79 @@
+﻿@page "/completed/hearing/{id}"
+@inject NavigationManager NavigationManager
+@inject Vocabulary.Data.HomeworkStore HomeworkStore
+@inject IJSRuntime JSRuntime
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Förhöret är nu klart</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col"><button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo("hearing/" + homework.Id))"> Gör förhöret igen </button></div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table id="Words" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th width="80">#</th>
+                        <th>Ord</th>
+                        <th>Antal</th>
+                        <th width="100">Rätt</th>
+                        <th width="100">Fel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in homework.Words)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>
+                                @g.Translated
+                            </td>
+                            <td>
+                                <small>@g.NrOfComplete</small>
+                            </td>
+                            <td class="text-success">@g.NrOfSuccess</td>
+                            <td class="text-danger">@g.NrOfFailure</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo("hearing/" + homework.Id))"> Gör förhöret igen </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Shared.Homework homework = null;
+
+    bool once = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        homework = await HomeworkStore.GetHomeworkAsync(Id);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        if (homework != null)
+        {
+            if (once)
+            {
+                once = false;
+                await JSRuntime.InvokeVoidAsync(
+                        "helperJsFunctions.speak", "Förhöret är nu avslutat, bra jobbat.");
+            }
+
+        }
+    }
+}
