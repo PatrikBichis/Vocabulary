@@ -89,13 +89,13 @@
     {
         if (homework != null)
         {
-            await JSRuntime.InvokeVoidAsync(
-                "helperJsFunctions.focusElement", "Name");
-
             if (currentWord != null)
             {
                 if (once)
                 {
+                    await JSRuntime.InvokeVoidAsync(
+                                    "helperJsFunctions.focusElement", "Name");
+
                     once = false;
                     await JSRuntime.InvokeVoidAsync(
                          "helperJsFunctions.speak", "Skriv" + currentWord.Native + " på engelska.");

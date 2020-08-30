@@ -48,12 +48,16 @@
         window.helperJsFunctions = {
             focusElement: function (id) {
                 const element = document.getElementById(id);
-                element.focus();
-                element.select();
 
-                console.dir(element);
+                if(element !== undefined){
 
-                console.log("Put id: " + id + " to focus!");
+                    element.focus();
+                    element.select();
+
+                    console.dir(element);
+
+                    console.log("Put id: " + id + " to focus!");
+                }
             },
             speak: function (text) {
                 responsiveVoice.speak(text, "Swedish Female", { rate: 0.8 ,  pitch: 1, volume: 1 });
