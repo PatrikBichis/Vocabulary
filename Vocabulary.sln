@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vocabulary", "Vocabulary.csproj", "{4883A113-28FF-44E7-996B-01BBDD13A158}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vocabulary.Shared", "..\Vocabulary.Shared\Vocabulary.Shared.csproj", "{BCE94285-3BA8-47A7-9846-3A00138AB186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vocabulary.Shared", "Vocabulary.Shared\Vocabulary.Shared.csproj", "{FA57C1DE-A8AD-4B33-8152-89675747F8CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{4883A113-28FF-44E7-996B-01BBDD13A158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4883A113-28FF-44E7-996B-01BBDD13A158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4883A113-28FF-44E7-996B-01BBDD13A158}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCE94285-3BA8-47A7-9846-3A00138AB186}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCE94285-3BA8-47A7-9846-3A00138AB186}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCE94285-3BA8-47A7-9846-3A00138AB186}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCE94285-3BA8-47A7-9846-3A00138AB186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA57C1DE-A8AD-4B33-8152-89675747F8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA57C1DE-A8AD-4B33-8152-89675747F8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA57C1DE-A8AD-4B33-8152-89675747F8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA57C1DE-A8AD-4B33-8152-89675747F8CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

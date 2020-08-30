@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Vocabulary.Shared\**" />
+    <Content Remove="Vocabulary.Shared\**" />
+    <EmbeddedResource Remove="Vocabulary.Shared\**" />
+    <None Remove="Vocabulary.Shared\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
@@ -15,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vocabulary.Shared\Vocabulary.Shared.csproj" />
+    <ProjectReference Include="Vocabulary.Shared\Vocabulary.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
