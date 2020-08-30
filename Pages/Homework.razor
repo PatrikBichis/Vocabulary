@@ -3,6 +3,8 @@
 
 @if (homework != null)
 {
+    <h3>@homework.Name</h3>
+    
     <EditForm Model="@homework" OnValidSubmit=@ValidFormSubmitted>
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -17,14 +19,14 @@
             <InputText @bind-Value="@homework.Language" class="form-control" id="Lang" />
         </div>
         <div class="form-group">
-            <label for="Words">Glosor</label>
+            <label for="Words">Glosor</label>@if(@homework.Words.Count <= 0){<span class="badge badge-warning ml-2">Lägg till glosor till läxan!</span >}
             <table id="Words" class="table table-bordered">
                 <thead>
                     <tr>
                         <th width="100"># <button class="btn btn-sm btn-primary float-right" @onclick="@AddWord"> + </button></th>
                         <th>Svenska</th>
                         <th>@homework.Language</th>
-                        <th width="100">Antal</th>
+                        <th width="100">Antal <small>gånger i förhör</small></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +60,7 @@
     </EditForm>
     <br />
     @if (showSparad) {
-        <div class="toast fade show" style="position:absolute; bottom:40px; right:40px" role="alert" aria-live="polite" aria-atomic="true" data-delay="5000">
+        <div class="toast fade show" style="position:absolute; top:40px; right:40px" role="alert" aria-live="polite" aria-atomic="true" data-delay="5000">
             <div class="toast-header">
                 <strong class="mr-auto">@homework.Name</strong>
                 <small>Sparad</small>

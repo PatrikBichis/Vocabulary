@@ -23,6 +23,7 @@ namespace Vocabulary.Shared
             NrOfComplete = 0;
             NrOfSuccess = 0;
             NrOfFailure = 0;
+            NrOfTries = 0;
             NrToComplete = 1;
             Id = Guid.NewGuid().ToString();
         }
@@ -30,6 +31,9 @@ namespace Vocabulary.Shared
         public void Reset()
         {
             NrOfComplete = 0;
+            NrOfTries = 0;
+            NrOfSuccess = 0;
+            NrOfFailure = 0;
         }
 
         [Key]
@@ -42,6 +46,8 @@ namespace Vocabulary.Shared
         public string Translated { get; set; }
 
         public int NrOfComplete { get; set; }
+
+        public int NrOfTries {get;set;}
 
         public int NrOfSuccess { get; set; }
 

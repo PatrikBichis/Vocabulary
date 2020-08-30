@@ -111,6 +111,7 @@
         {
             currentWord.NrOfComplete++;
             currentWord.NrOfSuccess++;
+            currentWord.NrOfTries++;
 
             if (CheckIfDone(homework.Words.ToList()))
             {
@@ -130,6 +131,7 @@
         else
         {
             currentWord.NrOfFailure++;
+            currentWord.NrOfTries++;
 
             await JSRuntime.InvokeVoidAsync(
             "helperJsFunctions.speak", "Nära men inte helt rätt.");
@@ -171,7 +173,7 @@
             return;
         }
 
-        if (currentWord.Translated.Count() == word.Word.Count() && currentWord.Translated != word.Word)
+        if (currentWord.Translated.Count() == word.Word.Count() && currentWord.Translated.ToLower() != word.Word.ToLower())
         {
             var index = 0;
 
@@ -180,9 +182,9 @@
             word.IsToShort = false;
             word.IsToLong = false;
 
-            foreach (var c in word.Word.ToCharArray())
+            foreach (var c in word.Word.ToLower().ToCharArray())
             {
-                if (c == currentWord.Translated.ToCharArray().ElementAt(index))
+                if (c == currentWord.Translated.ToLower().ToCharArray().ElementAt(index))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                 }

@@ -2,7 +2,7 @@
 @inject Vocabulary.Data.HomeworkStore HomeworkStore
 @inject NavigationManager NavigationManager
 
-<h3>CreateHomework</h3>
+<h3>Skapa en läxa</h3>
 <EditForm Model="@newHomework" OnValidSubmit=@ValidFormSubmitted>
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -16,7 +16,7 @@
         <label for="Lang">Språk</label>
         <InputText @bind-Value="@newHomework.Language" class="form-control" id="Lang" />
     </div>
-    <input type="submit" class="btn btn-primary" value="Save" />
+    <input type="submit" class="btn btn-primary" value="Spara" />
 </EditForm>
 
 @code {

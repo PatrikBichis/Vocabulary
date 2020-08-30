@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace Vocabulary.Shared
         {
             Description = "";
             DueDate = DateTime.Now;
-            Language = "Svenska";
+            Language = "Engelska";
 
             Id = Guid.NewGuid().ToString();
 
@@ -31,5 +32,11 @@ namespace Vocabulary.Shared
         public string Language { get; set; }
 
         public ICollection<Word> Words { get; set; } 
+
+
+        /* Dirty handling */
+
+        public bool IsDirty { get; set; } = true;
+        
     }
 }
