@@ -40,6 +40,10 @@
 
 @code {
 
+    
+     [CascadingParameter(Name="BaseUrl")]
+    private string BaseUrl { get; set; }
+
     Shared.Homework[] homeworks;
 
     protected override async Task OnInitializedAsync()
@@ -49,12 +53,12 @@
 
     async Task Add()
     {
-        NavigationManager.NavigateTo("/create/homework");
+        NavigationManager.NavigateTo(BaseUrl + "/create/homework");
     }
 
     async Task Change(string id)
     {
-        NavigationManager.NavigateTo("/homework/" + id);
+        NavigationManager.NavigateTo(BaseUrl + "/homework/" + id);
     }
 
     async Task Remove(string id)

@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col"><button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo("hearing/" + homework.Id))"> Gör förhöret igen </button></div>
+            <div class="col"><button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo(BaseUrl + "hearing/" + homework.Id))"> Gör förhöret igen </button></div>
         </div>
         <div class="row">
             <div class="col">
@@ -42,7 +42,7 @@
                         }
                         <tr>
                             <td colspan="5">
-                                <button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo("hearing/" + homework.Id))"> Gör förhöret igen </button>
+                                <button class="btn btn-sm btn-primary" @onclick="@(()=>NavigationManager.NavigateTo(BaseUrl + "hearing/" + homework.Id))"> Gör förhöret igen </button>
                             </td>
                         </tr>
                     </tbody>
@@ -55,6 +55,9 @@
 @code {
     [Parameter]
     public string Id { get; set; }
+
+     [CascadingParameter(Name="BaseUrl")]
+    private string BaseUrl { get; set; }
 
     Shared.Homework homework = null;
 

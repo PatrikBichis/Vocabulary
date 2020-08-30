@@ -22,6 +22,9 @@
 @code {
     Shared.Homework newHomework = new Shared.Homework();
 
+     [CascadingParameter(Name="BaseUrl")]
+    private string BaseUrl { get; set; }
+
     async Task ValidFormSubmitted(EditContext editContext)
     {
         Console.WriteLine("Ok to submit");
@@ -29,7 +32,7 @@
         {
             await HomeworkStore.SaveHomeworkAsync(newHomework);
 
-            NavigationManager.NavigateTo("homework/"+ newHomework.Id);
+            NavigationManager.NavigateTo(BaseUrl + "homework/"+ newHomework.Id);
         }
         catch (Exception ex)
         {
